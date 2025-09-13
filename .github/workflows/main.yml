@@ -3,7 +3,7 @@ name: TestingWorkflow
 on: [push]
 
 jobs:
-  Test:
+  first-workflow-testing:
     runs-on: ubuntu-latest
     steps:
       - name: Print code
