@@ -1,0 +1,12 @@
+name: Workflow Testing
+
+on: [push]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print code
+        run: echo "this testing workflow created"
+      - name: Print message 2
+        run: echo " workflow run successfully"
