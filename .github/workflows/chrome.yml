@@ -1,11 +1,17 @@
 name: Install Google Chrome on Ubuntu
 
 on:
-  workflow_dispatch
-
+  workflow_dispatch:
+    inputs:
+      server:
+        description: "Target server hostname or IP"
+        required: true
+      user:
+        description: "SSH username"
+        required: true
 jobs:
   install-chrome:
-    runs-on: self-hosted   # your VMware VM runner
+    runs-on: self-hosted
 
     steps:
       - name: Update apt
