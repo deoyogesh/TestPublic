@@ -1,0 +1,24 @@
+name: Install Google Chrome on Ubuntu
+
+on:
+  workflow_dispatch
+
+jobs:
+  install-chrome:
+    runs-on: self-hosted   # your VMware VM runner
+
+    steps:
+      - name: Update apt
+        run: sudo apt-get update -y
+
+      - name: Install dependencies
+        run: sudo apt-get install -y wget gnupg2 apt-transport-https software-properties-common
+
+      - name: Add Google Chrome repo
+        run: |
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update -y
+
+      - name: Install Google Chrome Stable
+        run: sudo apt-get install -y google-chrome-stable
