@@ -9,7 +9,6 @@ on:
       user:
         description: "SSH username"
         required: true
-
 jobs:
   install-chrome:
     runs-on: self-hosted
