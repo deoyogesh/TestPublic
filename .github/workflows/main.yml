@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-      
+        uses: actions/checkout@v3
       - name: Install XAMPP on server
         uses: appleboy/ssh-action@v0.1.10
         with:
