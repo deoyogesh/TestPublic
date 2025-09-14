@@ -1,12 +1,33 @@
-name: TestingWorkflow
-
-on: [push]
+name: Install XAMPP on Ubuntu Server
+on:
+  workflow_dispatch:
+    inputs:
+      server:
+        description: "Target server hostname or IP"
+        required: true
+      user:
+        description: "SSH username"
+        required: true
 
 jobs:
-  first-workflow-testing:
-    runs-on: ubuntu-latest
+  install-xampp:
+    runs-on: self-hosted
+
     steps:
-      - name: Print code
-        run: echo "this testing workflow created"
-      - name: Print message 2
-        run: echo " workflow run successfully"
+      - name: Checkout repo
+      
+      - name: Install XAMPP on server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ github.event.inputs.server }}
+          username: ${{ github.event.inputs.user }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Downloading and installing XAMPP ... "
+            wget https://sourceforge.net/projects/xampp/files/XAMPP%20Linux/8.2.12/xampp-linux-x64-8.2.12-0-installe… -O /tmp/xampp-installer.run
+            chmod +x /tmp/xampp-installer.run
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S /tmp/xampp-installer.run -- mode unattended
+            echo "XAMPP installed successfully."
+            # Start XAMPP services
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S /opt/lampp/lampp start
+            echo "✅ XAMPP services started."
