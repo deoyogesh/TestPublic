@@ -12,8 +12,7 @@ on:
 
 jobs:
   install-chrome:
-    runs-on: ubuntu-latest   # workflow runs here, Chrome gets installed remotely
-
+    runs-on: self-hosted
     steps:
       - name: Install Google Chrome remotely
         uses: appleboy/ssh-action@v1
