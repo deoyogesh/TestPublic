@@ -23,11 +23,10 @@ jobs:
           username: ${{ github.event.inputs.user }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "Downloading and installing XAMPP ... "
-            wget https://sourceforge.net/projects/xampp/files/XAMPP%20Linux/8.2.12/xampp-linux-x64-8.2.12-0-installe… -O /tmp/xampp-installer.run
-            chmod +x /tmp/xampp-installer.run
-            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S /tmp/xampp-installer.run -- mode unattended
+            echo "Installing XAMPP ... "
+            cd /tmp
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S /tmp/xampp-installer.run --mode unattended
             echo "XAMPP installed successfully."
-            # Start XAMPP services
+            echo "Start XAMPP"
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S /opt/lampp/lampp start
             echo "✅ XAMPP services started."
