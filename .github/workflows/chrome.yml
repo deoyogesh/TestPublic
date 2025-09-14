@@ -1,4 +1,4 @@
-name: Install Google Chrome on Ubuntu
+name: Install Google Chrome on Ubuntu Server
 
 on:
   workflow_dispatch:
@@ -9,22 +9,35 @@ on:
       user:
         description: "SSH username"
         required: true
+
 jobs:
   install-chrome:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest   # workflow runs here, Chrome gets installed remotely
 
     steps:
-      - name: Update apt
-        run: sudo apt-get update -y
+      - name: Install Google Chrome remotely
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ github.event.inputs.server }}
+          username: ${{ github.event.inputs.user }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Install dependencies
-        run: sudo apt-get install -y wget gnupg2 apt-transport-https software-properties-common
+          script: |
+            set -e
+            echo ">>> Updating apt and installing dependencies..."
+            sudo apt-get update -y
+            sudo apt-get install -y wget gnupg2 apt-transport-https software-properties-common
 
-      - name: Add Google Chrome repo
-        run: |
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update -y
+            echo ">>> Adding Google signing key and repository..."
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \
+              | sudo gpg --dearmor -o /usr/share/keyrings/google-linux.gpg
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux.gpg] \
+              http://dl.google.com/linux/chrome/deb/ stable main" \
+              | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            sudo apt-get update -y
 
-      - name: Install Google Chrome Stable
-        run: sudo apt-get install -y google-chrome-stable
+            echo ">>> Installing Google Chrome..."
+            sudo apt-get install -y google-chrome-stable
+
+            echo ">>> Verifying installation..."
+            google-chrome --version || echo "Chrome installed but not in PATH."
