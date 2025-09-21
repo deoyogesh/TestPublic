@@ -25,10 +25,8 @@ jobs:
           path: repo-b
           persist-credentials: false
           ssh-strict: false
-
       - name: Debug (list files from Repo B)
         run: ls -R repo-b
-
       - name: Test SSH connection to server
         run: |
           echo "${{ secrets.SERVER_SSH_KEY }}" > id_rsa
@@ -37,12 +35,12 @@ jobs:
 
       - name: Copy file from Repo B to server
         uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ github.event.inputs.server_ip }}
-          username: ${{ github.event.inputs.server_user }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: 22
-          source: "repo-b/index.php"
-          target: "/data"
-          overwrite: true
-          debug: true
+          with:
+            host: ${{ github.event.inputs.server_ip }}
+            username: ${{ github.event.inputs.server_user }}
+            key: ${{ secrets.SERVER_SSH_KEY }}
+            port: 22
+            source: "repo-b/index.php"
+            target: "/data"
+            overwrite: true
+            debug: true
