@@ -13,7 +13,6 @@ on:
         description: "Branch of DevOps-Project to deploy"
         required: false
         default: main
-
 jobs:
   deploy:
     runs-on: self-hosted
