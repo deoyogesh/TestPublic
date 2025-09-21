@@ -1,4 +1,4 @@
-ame: Deploy file from another repo via SSH key
+name: Deploy file from another repo via SSH key
 
 on:
   workflow_dispatch:
