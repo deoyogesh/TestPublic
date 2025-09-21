@@ -13,7 +13,6 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-
     steps:
       - name: Checkout Repo A (current repo)
         uses: actions/checkout@v3
@@ -21,7 +20,7 @@ jobs:
       - name: Checkout Repo B (private via GitHub deploy key)
         uses: actions/checkout@v3
         with:
-          repository: triovative-bot/daypredict
+          repository: deoyogesh/TestPublic
           ssh-key: ${{ secrets.GH_DEPLOY_KEY }}
           ref: main
           path: repo-b
