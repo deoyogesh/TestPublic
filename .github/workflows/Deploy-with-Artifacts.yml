@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Repo B
         uses: actions/checkout@v3
         with:
-          repository: deoygesh/DevOps-Project     # your private repo
+          repository: deoyogesh/DevOps-Project     # your private repo
           ssh-key: ${{ secrets.GH_DEPLOY_KEY }}  # deploy key
           ref: ${{ github.event.inputs.repo_b_branch }}
           path: repo-b
