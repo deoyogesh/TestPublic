@@ -1,5 +1,4 @@
-name: Deploy file from another repo via SSH key
-
+name: Deploy file from another repo via SSH ke
 on:
   workflow_dispatch:
     inputs:
@@ -9,33 +8,35 @@ on:
       server_user:
         description: "Target server username"
         required: true
-
 jobs:
   deploy:
     runs-on: self-hosted
-
     steps:
-      - name: Checkout Repo A (current repo)
+      - name: Checkout Repo A (current repo: TestPublic)
         uses: actions/checkout@v3
 
-      - name: Checkout Repo B (private via GitHub deploy key)
+      - name: Checkout Repo B (DevOps-Project via deploy key)
         uses: actions/checkout@v3
         with:
-          repository: deoyogesh/TestPublic
-          ssh-key: ${{ secrets.GH_DEPLOY_KEY }}   # 👈 deploy key for GitHub
-          ref: main
+          repository: ${{ github.repository_owner }}/DevOps-Project
+          ssh-key: ${{ secrets.GH_DEPLOY_KEY }}
+          ref: ${{ github.event.inputs.repo_b_branch }}
           path: repo-b
           persist-credentials: false
           ssh-strict: false
 
       - name: Debug (list files from Repo B)
-        run: ls -R repo-b
+        run: ls -l repo-b
+
+      - name: Verify webui.php exists
+        run: test -f repo-b/webui.php || (echo "webui.php not found!" && exit 1)
 
       - name: Test SSH connection to server
         run: |
-          echo "${{ secrets.SERVER_SSH_KEY }}" > id_rsa
-          chmod 600 id_rsa
-          ssh -o StrictHostKeyChecking=no -i id_rsa ${{ github.event.inputs.server_user }}@${{ github.event.inputs.server_ip }} "echo Connected OK"
+          printf "%s\n" "${{ secrets.SERVER_SSH_KEY }}" > $RUNNER_TEMP/id_rsa
+          chmod 600 $RUNNER_TEMP/id_rsa
+          ssh -o StrictHostKeyChecking=no -i $RUNNER_TEMP/id_rsa ${{ github.event.inputs.server_user }}@${{ github.event.inputs.server_ip }} "echo Connected OK"
+          rm -f $RUNNER_TEMP/id_rsa
 
       - name: Copy file from Repo B to server
         uses: appleboy/scp-action@v0.1.7
@@ -44,7 +45,7 @@ jobs:
           username: ${{ github.event.inputs.server_user }}
           key: ${{ secrets.SERVER_SSH_KEY }}     # 👈 key for target server
           port: 22
-          source: "repo-b/index.php"
-          target: "/data"
+          source: "repo-b/webui.php"
+          target: ${{ secrets.TARGET_PATH }}
           overwrite: true
           debug: true
