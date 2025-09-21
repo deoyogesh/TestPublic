@@ -18,7 +18,7 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Checkout Repo A (current repo: TestPublic)
+      - name: Checkout Repo A (current repo:TestPublic)
         uses: actions/checkout@v3
 
       - name: Checkout Repo B (DevOps-Project via deploy key)
