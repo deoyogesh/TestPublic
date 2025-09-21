@@ -1,4 +1,4 @@
-name: Deploy file from another repo via SSH ke
+name: Deploy file from another repo via SSH key
 on:
   workflow_dispatch:
     inputs:
@@ -11,32 +11,29 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+
     steps:
-      - name: Checkout Repo A (current repo:TestPublic)
+      - name: Checkout Repo A (current repo)
         uses: actions/checkout@v3
 
-      - name: Checkout Repo B (DevOps-Project via deploy key)
+      - name: Checkout Repo B (private via GitHub deploy key)
         uses: actions/checkout@v3
         with:
-          repository: ${{ github.repository_owner }}/DevOps-Project
-          ssh-key: ${{ secrets.GH_DEPLOY_KEY }}
-          ref: ${{ github.event.inputs.repo_b_branch }}
+          repository: deoygesh/TestPublic
+          ssh-key: ${{ secrets.GH_DEPLOY_KEY }}   # 👈 deploy key for GitHub
+          ref: main
           path: repo-b
           persist-credentials: false
           ssh-strict: false
 
       - name: Debug (list files from Repo B)
-        run: ls -l repo-b
-
-      - name: Verify webui.php exists
-        run: test -f repo-b/webui.php || (echo "webui.php not found!" && exit 1)
+        run: ls -R repo-b
 
       - name: Test SSH connection to server
         run: |
-          printf "%s\n" "${{ secrets.SERVER_SSH_KEY }}" > $RUNNER_TEMP/id_rsa
-          chmod 600 $RUNNER_TEMP/id_rsa
-          ssh -o StrictHostKeyChecking=no -i $RUNNER_TEMP/id_rsa ${{ github.event.inputs.server_user }}@${{ github.event.inputs.server_ip }} "echo Connected OK"
-          rm -f $RUNNER_TEMP/id_rsa
+          echo "${{ secrets.SERVER_SSH_KEY }}" > id_rsa
+          chmod 600 id_rsa
+          ssh -o StrictHostKeyChecking=no -i id_rsa ${{ github.event.inputs.server_user }}@${{ github.event.inputs.server_ip }} "echo Connected OK"
 
       - name: Copy file from Repo B to server
         uses: appleboy/scp-action@v0.1.7
