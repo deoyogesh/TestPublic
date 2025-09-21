@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Repo B (DevOps-Project via deploy key)
         uses: actions/checkout@v3
         with:
-          repository: deoygesh/DevOps-Project   # or orgname/DevOps-Project if under org
+          repository: deoyogesh/DevOps-Project
           ssh-key: ${{ secrets.GH_DEPLOY_KEY }}
           ref: ${{ github.event.inputs.repo_b_branch }}
           path: repo-b
