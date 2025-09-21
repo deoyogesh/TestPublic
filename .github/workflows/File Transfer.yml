@@ -11,7 +11,6 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-
     steps:
       - name: Checkout Repo A (current repo)
         uses: actions/checkout@v3
