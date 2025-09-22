@@ -14,6 +14,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: self-hosted
+    environment: development
     steps:
       - name: Checkout Repo A
         uses: actions/checkout@v3
@@ -26,8 +27,6 @@ jobs:
           path: repo-b
           persist-credentials: false
           ssh-strict: false
-      - name: List files from Repo B
-        run: ls -l repo-b
       - name: Archive artifact
         run: |
           mkdir -p artifact
