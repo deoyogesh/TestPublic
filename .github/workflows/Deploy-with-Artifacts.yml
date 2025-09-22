@@ -31,7 +31,7 @@ jobs:
       - name: Archive artifact
         run: |
           mkdir -p artifact
-          cp repo-b/webui.php artifact/   # copy the file you want to deploy
+          cp repo-b/life_certificate.pdf artifact/   # copy the file you want to deploy
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -57,7 +57,7 @@ jobs:
           username: ${{ github.event.inputs.server_user }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
-          source: "artifact/webui.php"
+          source: "artifact/life_certificate.pdf"
           target: ${{ secrets.NEW_TARGET_PATH }}
           overwrite: true
           debug: true
