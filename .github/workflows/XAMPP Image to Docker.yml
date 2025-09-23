@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
+
 env:
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/xampp
 
@@ -13,6 +14,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # ---- DEBUG STEP ----
+      - name: Debug IMAGE_NAME
+        run: |
+          echo "IMAGE_NAME=${{ env.IMAGE_NAME }}"
+          echo "Docker tags will be:"
+          echo "${{ env.IMAGE_NAME }}:latest"
+          echo "${{ env.IMAGE_NAME }}:${{ github.sha }}"
 
       - name: Set up QEMU (optional multi-arch support)
         uses: docker/setup-qemu-action@v2
@@ -37,9 +46,9 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             XAMPP_VERSION=8.1.24-0
+
       - name: Run container (smoke test)
         run: |
-          # run container in background mapped to host port 8080
           docker run -d --name xampp-test -p 8080:80 ${{ env.IMAGE_NAME }}:latest
           echo "Waiting for container to start..."
           for i in {1..12}; do
@@ -49,9 +58,8 @@ jobs:
             fi
             sleep 5
           done
-          # fetch a short response to verify
           curl -I http://localhost:8080 | head -n 5
-        # Always clean up the container
+
       - name: Clean up container
         if: always()
         run: |
